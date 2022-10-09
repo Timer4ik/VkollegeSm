@@ -7,8 +7,7 @@ class PostController {
         const person_id = req.user
         const { content } = req.body
 
-        let photos = req.fileArray
-
+        let photos = req.filesArray
 
         try {
 
@@ -69,7 +68,7 @@ class PostController {
         let { id: postId } = req.params
         let { content, deletedPhotos } = req.body
 
-        let photos = req.fileArray
+        let photos = req.filesArray
 
         deletedPhotos = deletedPhotos ? JSON.parse(deletedPhotos) : null
 

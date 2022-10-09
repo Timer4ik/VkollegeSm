@@ -7,8 +7,8 @@ const Person = db.define("person", {
     email: { type: DataTypes.STRING, allowNull: false, unique: true },
     password: { type: DataTypes.STRING, allowNull: false },
     birthDate: { type: DataTypes.DATE, allowNull: true },
-    status:{type:DataTypes.STRING,allowNull:true},
-    about:{type:DataTypes.STRING,allowNull:true},
+    status:{type:DataTypes.STRING(100),allowNull:true},
+    about:{type:DataTypes().STRING,allowNull:true},
     photo: { type: DataTypes.STRING, allowNull: true, defaultValue: "person.jpg" }
 }, { freezeTableName: true })
 
@@ -25,7 +25,7 @@ const PostPhoto = db.define("post_photo", {
 }, { freezeTableName: true })
 
 const Friend = db.define("friend",{
-    
+    person_id:
 })
 
 Person.hasMany(Post,{foreignKey:"person_id"})

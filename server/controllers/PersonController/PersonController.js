@@ -1,6 +1,6 @@
 const { Person, Post, PostPhoto } = require("../../models/model")
 const { Op } = require("sequelize")
-
+const { fileUtils, filesIsImages } = require("../../utils/fileUtils.js")
 
 class PersonController {
 
@@ -36,7 +36,7 @@ class PersonController {
             let persons = await Person.findAll({
                 where: {
                     name: {
-                        [Op.like]: `${ searchString? searchString?.trim():"%%"}%`
+                        [Op.like]: `${searchString ? searchString?.trim() : "%%"}%`
                     }
                 },
                 limit: limit,
@@ -62,13 +62,27 @@ class PersonController {
 
     async editPerson(req, res) {
 
-        const { id: personId } = req.params
-        const { status,about,name,birthDate } = req.body
+        const person_id = req.user
+        const { status, about, name, birthDate } = req.body
+        const photos = req.filesArray
 
         try {
 
+            let isImageFile = filesIsImages(photos)
+            if (!isImageFile) return res.status(400).json({ message: "it's not image file" })
+    
+    
+            let updatedPerson = await Person.update({
+                status, about, name, birthDate,
+                photo: photos[0].uuidName
+            }, {
+                where: {
+                    person_id
+                },
+                returning:true,
+            })
 
-
+            return res.json({message:"person updated",updatedPerson:updatedPerson[1][0]})
         } catch (error) {
             return res.status(400).json({ message: error.message, error })
         }

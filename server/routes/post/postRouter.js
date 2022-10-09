@@ -10,13 +10,13 @@ const router = Router()
 let createPostMiddlewares = {
 
 }
-router.post("/post", authCheckMiddleware, postCreateValidator, filesToArrayMiddleware, validationCheckMiddleware, PostController.createPost)
+router.post("/post", authCheckMiddleware, postCreateValidator, filesToArrayMiddleware, PostController.createPost)
 
 router.get("/posts/:id", authCheckMiddleware, PostController.getUserPosts)
 
 router.delete("/post/:id", authCheckMiddleware, PostController.deletePost)
 
-router.put("/post/:id", authCheckMiddleware, postUpdateValidator, filesToArrayMiddleware, validationCheckMiddleware, PostController.updatePost)
+router.put("/post/:id", authCheckMiddleware, postUpdateValidator, filesToArrayMiddleware, PostController.updatePost)
 // router.get("/persons",PersonController.getPersons)
 // router.put()
 
