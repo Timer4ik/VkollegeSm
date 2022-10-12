@@ -4,6 +4,7 @@ const cors = require("cors")
 const routes = require("./routes/routes.js")
 const db = require("./db.js")
 const fileUpload = require("express-fileupload")
+const { Friend, Person } = require("./models/model.js")
 
 const app = express()
 const PORT = process.env.PORT

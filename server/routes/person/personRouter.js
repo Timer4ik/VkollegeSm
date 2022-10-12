@@ -8,6 +8,8 @@ const router = Router()
 router.get("/person/:id",PersonController.getOnePerson)
 router.get("/persons",PersonController.getPersons)
 router.put("/person/edit",authCheckMiddleware, filesToArrayMiddleware,PersonController.editPerson)
+router.post("/person/friend/:id",authCheckMiddleware,PersonController.addFriend)
+router.delete("/person/friend/:id",authCheckMiddleware,PersonController.removeFriend)
 // router.put()
 
 module.exports = router
