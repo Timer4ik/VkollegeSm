@@ -3,7 +3,7 @@ const db = require("../db.js")
 
 const Person = db.define("person", {
     person_id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true },
-    name: { type: DataTypes.STRING, allowNull: false },
+    name: { type: DataTypes.STRING(100), allowNull: false },
     email: { type: DataTypes.STRING, allowNull: false, unique: true },
     password: { type: DataTypes.STRING, allowNull: false },
     birthDate: { type: DataTypes.DATE, allowNull: true },

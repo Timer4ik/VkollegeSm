@@ -6,10 +6,6 @@ const filesToArrayMiddleware = require("../../middlewares/filesToArrayMiddleware
 const validationCheckMiddleware = require("../../middlewares/validationCheckMiddleware.js")
 const router = Router()
 
-// router.post()
-let createPostMiddlewares = {
-
-}
 router.post("/post", authCheckMiddleware, postCreateValidator, filesToArrayMiddleware, PostController.createPost)
 
 router.get("/posts/:id", authCheckMiddleware, PostController.getUserPosts)

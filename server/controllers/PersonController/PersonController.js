@@ -136,7 +136,7 @@ class PersonController {
             let isImageFile = filesIsImages(photos)
             if (!isImageFile) return res.status(400).json({ message: "it's not image file" })
 
-
+            console.log(photos);
             let updatedPerson = await Person.update({
                 status, about, name, birthDate,
                 photo: photos[0].uuidName

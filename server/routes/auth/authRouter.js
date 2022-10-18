@@ -6,7 +6,7 @@ const router = Router()
 
 // router.post()
 router.post("/register", registerValidator, AuthController.register)
-router.post("/login",loginValidator,AuthController.login)
+router.post("/login",...loginValidator,AuthController.login)
 // router.put()
 
 module.exports = router
