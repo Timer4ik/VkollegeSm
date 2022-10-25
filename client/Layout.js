@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Alert, Button, StyleSheet, Text, View } from 'react-native'
+import { Alert, Button, StatusBar, StyleSheet, Text, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
+import HeaderComponent from './components/Header/HeaderComponent'
+import MenuBar from './components/MenuBar/MenuBar'
 import Modal from './components/Modal/Modal'
 import { useSwipe } from './hooks/useSwipe'
 
@@ -21,23 +23,15 @@ export default function Layout({ children }) {
     }
   }, [distance])
 
-  useEffect(() => {
-    Alert.alert(message)
-  })
 
   return (
     <View style={styles.layout} {...bind}>
+      <StatusBar backgroundColor="#3B48C1" />
+      <HeaderComponent />
       <View style={styles.content}>
         {children}
       </View>
-      <View style={styles.footer}>
-        <Button title='Меню' />
-        <Button title='Моя страница' />
-        <Button title='Настройки' />
-      </View>
-      <Modal isOpen={isOpen}>
-        <Text>ugabuga</Text>
-      </Modal>
+      <MenuBar />
     </View>
   )
 }
@@ -47,6 +41,7 @@ const styles = StyleSheet.create({
     height: "100%",
     display: "flex",
     flexDirection: "column",
+    backgroundColor:"#F2F2F2"
   },
   content: {
     flex: 1

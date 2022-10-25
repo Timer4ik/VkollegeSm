@@ -1,11 +1,11 @@
 import React from 'react'
 import { View,Text } from 'react-native'
 
-export default function PersonScreen() {
+export default function PostScreen() {
     return (
         <View>
             <Text>
-                PersonScreen
+                PostScreen
             </Text>
         </View>
     )

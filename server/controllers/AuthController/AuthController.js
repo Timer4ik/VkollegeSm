@@ -48,7 +48,7 @@ class AuthController {
 
             const token = jwt.sign({ person_id: person.person_id }, process.env.SECRET_KEY, { expiresIn: "24h" })
 
-            return res.status(200).json({ message: "authorization was successful", token })
+            return res.status(200).json({ message: "authorization was successful", token,person_id:person.person_id })
         } catch (error) {
             return res.status(400).json({ message: error.message, error })
         }

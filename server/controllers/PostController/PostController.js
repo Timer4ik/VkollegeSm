@@ -1,4 +1,4 @@
-const { Post, PostPhoto } = require("../../models/model")
+const { Post, PostPhoto, Comment, Person, Like, PostCategory } = require("../../models/model")
 const { filesMove, filesRemove, filesIsImages } = require("../../utils/fileUtils.js")
 
 class PostController {
@@ -33,8 +33,74 @@ class PostController {
         }
     }
 
+    getUserPost = async (req, res) => {
+
+        const { id: post_id } = req.params
+
+        try {
+
+            const post = await Post.findOne({
+                where: {
+                    post_id
+                },
+                include: [{
+                    model: PostPhoto
+                }, {
+                    model: Comment,
+                    include: [{
+                        model: Person
+                    }]
+                }, {
+                    model: Like
+                }, {
+                    model: PostCategory
+                }]
+            })
+
+            return res.status(200).json({ message: "post has been gotten", post })
+
+        } catch (error) {
+            return res.status(400).json({ message: error.message, error })
+        }
+    }
+    // Добавить сортировку
+    getPosts = async (req, res) => {
+
+        let { limit, page, category_id } = req.query
+        page = page ?? 1
+        limit = limit ?? 10
+
+        try {
+
+            const posts = await Post.findAll({
+                limit: limit,
+                where: category_id && {
+                    category_id: category_id
+                },
+                offset: page * limit - limit,
+                order: [
+                    ['views', 'DESC'],
+                ], include: [{
+                    model: PostPhoto
+                }, {
+                    model: Comment,
+                    include: [{
+                        model: Person
+                    }]
+                }, {
+                    model: Like
+                }]
+            })
+
+            return res.status(200).json({ message: "post has been gotten", posts })
+
+        } catch (error) {
+            return res.status(400).json({ message: error.message, error })
+        }
+    }
+
     getUserPosts = async (req, res) => {
-        let { limit, page } = req.query
+        let { limit, page, category_id } = req.query
         let { id: personId } = req.params
 
         page = page ?? 1
@@ -44,15 +110,20 @@ class PostController {
 
             const posts = await Post.findAll({
                 where: personId && {
-                    person_id: personId
+                    person_id: personId, category_id: category_id && ""
                 },
                 limit: limit,
                 offset: page * limit - limit,
-                include: [
-                    {
-                        model: PostPhoto
-                    }
-                ]
+                include: [{
+                    model: PostPhoto
+                }, {
+                    model: Comment,
+                    include: [{
+                        model: Person
+                    }]
+                }, {
+                    model: Like
+                }]
             })
 
 
@@ -132,6 +203,98 @@ class PostController {
         }
     }
 
+    commentPost = async (req, res) => {
+        const person_id = req.user
+        const { id: post_id } = req.params
+        const { content } = req.body
+
+        try {
+
+            const comment = await Comment.create({
+                content,
+                person_id,
+                post_id
+            }, { returning: true })
+
+            await comment.save()
+
+            return res.status(200).json({ message: "comment was created", comment })
+        } catch (error) {
+            return res.status(400).json({ message: error.message, error })
+        }
+    }
+
+    getPostCommets = async (req, res) => {
+
+        const { id: post_id } = req.params
+
+        try {
+
+            const comments = await Comment.findAll({
+                where: {
+                    post_id
+                },
+                include: {
+                    model: Person
+                }
+            })
+
+            return res.json({ message: "comment has gotten", comments })
+
+        } catch (error) {
+            return res.status(400).json({ message: error.message, error })
+        }
+    }
+
+    deletePostComment = async (req, res) => {
+
+        const { id: comment_id } = req.params
+        const person_id = req.user
+
+        try {
+
+            const deltedComment = await Comment.destroy({
+                where: {
+                    comment_id,
+                    person_id
+                }
+            })
+
+            return res.json({ message: "comment successfully deleted", deltedComment })
+
+        } catch (error) {
+            return res.status(400).json({ message: error.message, error })
+        }
+    }
+
+    likePost = async (req, res) => {
+
+        const person_id = req.user
+        const { id: post_id } = req.params
+
+        try {
+
+            const foundLike = await Like.findOne({
+                person_id,
+                post_id
+            })
+
+            if (foundLike) {
+                await foundLike.destroy()
+                return res.json({ message: "post was unliked", isLiked: false })
+            } else {
+                await Like.create({
+                    person_id,
+                    post_id
+                })
+                return res.json({ message: "post was liked", isLiked: true })
+            }
+
+        } catch (error) {
+            return res.status(400).json({ message: error.message, error })
+        }
+    }
 }
+
 
 module.exports = new PostController()
