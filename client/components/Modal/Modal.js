@@ -23,9 +23,7 @@ export default function Modal({ isOpen, children }) {
                 useNativeDriver: true
             }).start()
         }
-
     }, [isOpen, xAnim])
-
 
     return (
         <Animated.View style={[styles.modal, {
@@ -46,7 +44,7 @@ const styles = StyleSheet.create({
         right: 0,
         bottom: 0,
         zIndex: 10,
-        backgroundColor: "white",
+        backgroundColor: "rgb(217, 217, 217)",
         opacity: 1,
     }
 })

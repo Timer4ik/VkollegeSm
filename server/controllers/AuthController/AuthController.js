@@ -38,13 +38,13 @@ class AuthController {
 
             const person = await Person.findOne({
                 where: {
-                    email: email,
+                    email: email.toLowerCase(),
                 }
             })
-            if (!person) return res.status(400).json({ message: "person doesn't exist" })
+            if (!person) return res.status(400).json({ message: "Пользователя с таким email не существует" })
 
             const isMatch = await bcrypt.compare(password, person.password)
-            if (!isMatch) return res.status(400).json({ message: "invalid password" })
+            if (!isMatch) return res.status(400).json({ message: "Неверный пароль" })
 
             const token = jwt.sign({ person_id: person.person_id }, process.env.SECRET_KEY, { expiresIn: "24h" })
 

@@ -1,5 +1,9 @@
-import React from 'react'
-import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
+import useField from '../hooks/useField'
+
+import * as AuthAction from "../store/actions/AuthActions.js"
 
 function LoginService() {
     return (
@@ -9,7 +13,7 @@ function LoginService() {
             </Text>
             <View style={styles.loginService}>
                 {[1, 2, 3, 4, 5].map(i =>
-                    <View style={{ width: 30, height: 30, backgroundColor: "gray", margin: 5 }} />
+                    <View key={i} style={{ width: 30, height: 30, backgroundColor: "gray", margin: 5 }} />
                 )}
             </View>
         </View>
@@ -34,11 +38,37 @@ function AuthSwitcher(props) {
     )
 }
 
-export default function LoginScreen({navigation }) {
+function ErrorView(props) {
+    return (
+        <Text style={styles.errorView}>{props.msg}</Text>
+    )
+}
 
-    const switchOnRegister =() =>{
+
+export default function LoginScreen({ navigation }) {
+
+    const switchOnRegister = () => {
         navigation.navigate("RegisterScreen")
     }
+    const dispatch = useDispatch()
+    const { message, error } = useSelector(state => state.auth)
+
+    const email = useField("")
+    const password = useField("")
+
+    const login = async () => {
+        dispatch(AuthAction.login({
+            email: email.value,
+            password: password.value
+        }))
+    }
+
+    useEffect(() => {
+        message && Alert.alert("Ошибка", message)
+    }, [error, message])
+    
+    const emailError = error?.find(e => e.param === "email")?.msg
+    const passwordError = error?.find(e => e.param === "password")?.msg
 
     return (
         <ScrollView>
@@ -49,19 +79,21 @@ export default function LoginScreen({navigation }) {
 
                 <View style={styles.field}>
                     <Text style={styles.label}>E-mail</Text>
-                    <TextInput style={styles.input} placeholder="Введите email" />
+                    <TextInput {...email} style={styles.input} placeholder="Введите email" />
+                    <ErrorView msg={emailError} />
                 </View>
 
                 <View style={styles.field}>
                     <Text style={styles.label}>Пароль</Text>
-                    <TextInput secureTextEntry={true} style={styles.input} placeholder="Введите пароль" />
+                    <TextInput {...password} style={styles.input} placeholder="Введите пароль" secureTextEntry={true} />
+                    <ErrorView msg={passwordError} />
                 </View>
 
                 <LoginService />
 
-                <View style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={login}>
                     <Text style={styles.buttonText}>Войти</Text>
-                </View >
+                </TouchableOpacity>
 
                 <View style={styles.forgotPassword}>
                     <Text style={styles.forgotPasswordText}>Забыли пароль ??</Text>
@@ -82,7 +114,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 32,
-        marginBottom: 30,
+        marginBottom: 25,
         color: "#252525",
     },
     auth: {
@@ -101,7 +133,7 @@ const styles = StyleSheet.create({
         borderWidth: 1
     },
     field: {
-        marginBottom: 30
+        marginBottom: 25
     },
 
     button: {
@@ -109,7 +141,7 @@ const styles = StyleSheet.create({
         width: "100%",
         padding: 20,
         borderRadius: 18,
-        marginBottom: 30
+        marginBottom: 25
     },
     buttonText: {
         color: "white",
@@ -125,13 +157,13 @@ const styles = StyleSheet.create({
         height: 10,
         backgroundColor: "#D1D1D1",
         marginHorizontal: -25,
-        marginBottom: 30
+        marginBottom: 25
     },
 
     authSwitcher: {
         display: "flex",
         flexDirection: "row",
-        paddingVertical:15
+        paddingVertical: 15
     },
     authSwitcherTitle: {
         marginRight: 5,
@@ -144,14 +176,20 @@ const styles = StyleSheet.create({
 
     loginAnother: {
         opacity: 0.2,
-        marginBottom: 30
+        marginBottom: 25
     },
 
     forgotPassword: {
-        marginBottom: 30
+        marginBottom: 25
     },
     forgotPasswordText: {
         fontSize: 16,
         color: "#4E5FFC"
+    },
+    errorView: {
+        fontSize: 12,
+        color: "red",
+        marginTop: 10
     }
+
 })

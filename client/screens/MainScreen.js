@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Alert } from 'react-native'
 import { fetchPosts } from '../api/api'
 
 
@@ -53,13 +53,17 @@ export default function MainScreen() {
 
     const [posts, setPosts] = useState([])
 
-    useEffect(() => {
-        (async () => {
+    const getPosts = async () => {
+        try {
             const data = await fetchPosts()
-            console.log(data);
-        })()
+            console.log(JSON.stringify({ posts }));
+        } catch (error) {
+            Alert.alert("something went wrong")
+        }
+    }
+    useEffect(() => {
+        getPosts()
     }, [])
-
 
     return (
         <ScrollView>

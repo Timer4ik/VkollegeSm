@@ -43,7 +43,7 @@ export default function Router() {
     return (
         <Layout>
             <NavigationContainer>
-                <Stack.Navigator screenOptions={{ headerShown: false,contentStyle:{backgroundColor:"#F2F2F2"} }} initialRouteName='MainScreen'>
+                <Stack.Navigator screenOptions={{ headerShown: false,contentStyle:{backgroundColor:"#F2F2F2"} }} initialRouteName='LoginScreen'>
                     <Stack.Screen name="LoginScreen" component={LoginScreen} />
                     <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
                     <Stack.Screen name="MainScreen" component={MainScreen} />

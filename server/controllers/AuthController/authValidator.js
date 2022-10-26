@@ -10,8 +10,8 @@ const registerValidator = createValidator([
 ])
 
 const loginValidator = createValidator([
-    check("email","Введите email").exists(),
-    check("password","Введите пароль").exists(),
+    check("email","Введите email").exists().isLength({min:1}),
+    check("password","Введите пароль").exists().isLength({min:1}),
 ])
 
 module.exports = {registerValidator,loginValidator}

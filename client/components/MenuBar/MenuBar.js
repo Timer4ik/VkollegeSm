@@ -1,34 +1,47 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import Modal from '../Modal/Modal'
 
 export default function MenuBar() {
 
+    const [leftIsOpen, setLeftIsOpen] = useState(false)
+
+
+    const openLeftModal = () => {
+        setLeftIsOpen(!leftIsOpen)
+    }
+
     return (
-        <View style={styles.menuBar}>
-            <TouchableOpacity style={styles.menuBarButton}>
-                <Image style={styles.image} source={require("../../images/LeftArrow.png")} />
-            </TouchableOpacity>
-            <TouchableOpacity>
-                <View style={styles.circle} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuBarButton}>
-                <Image style={styles.image} source={require("../../images/RightArrow.png")} />
-            </TouchableOpacity>
-        </View>
+        <>
+            {/* Придумать как сделать модалку */}
+            <Modal isOpen={leftIsOpen} >
+                <Text>Создать пост</Text>
+            </Modal>
+            <View style={styles.menuBar}>
+                <TouchableOpacity style={styles.menuBarButton} onPress={() => openLeftModal()}>
+                    <Image style={styles.image} source={require("../../images/LeftArrow.png")} />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <View style={styles.circle} />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.menuBarButton}>
+                    <Image style={styles.image} source={require("../../images/RightArrow.png")} />
+                </TouchableOpacity>
+            </View>
+        </>
     )
 }
 
 const styles = StyleSheet.create({
     menuBar: {
         width: "100%",
-        backgroundColor: "rgba(87, 98, 202, 0.85)",
+        backgroundColor: "rgb(59, 72, 193)",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         flexDirection: "row",
         padding: 20,
-        position: "absolute",
-        bottom: 0
+        zIndex:10
     },
     circle: {
         backgroundColor: "white",
@@ -38,9 +51,9 @@ const styles = StyleSheet.create({
     },
     menuBarButton: {
     },
-    image:{
-        width:20,
-        height:26
+    image: {
+        width: 20,
+        height: 26
     }
 })
 

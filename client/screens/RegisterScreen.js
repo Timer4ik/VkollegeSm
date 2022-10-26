@@ -1,5 +1,9 @@
-import React from 'react'
-import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
+import React, { useEffect } from 'react'
+import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
+import useField from '../hooks/useField'
+
+import * as AuthAction from "../store/actions/AuthActions.js"
 
 function LoginService() {
     return (
@@ -9,7 +13,7 @@ function LoginService() {
             </Text>
             <View style={styles.loginService}>
                 {[1, 2, 3, 4, 5].map(i =>
-                    <View style={{ width: 30, height: 30, backgroundColor: "gray", margin: 5 }} />
+                    <View key={i} style={{ width: 30, height: 30, backgroundColor: "gray", margin: 5 }} />
                 )}
             </View>
         </View>
@@ -34,11 +38,42 @@ function AuthSwitcher(props) {
     )
 }
 
-export default function RegisterScreen({navigation}) {
+function ErrorView(props) {
+    return (
+        <Text style={styles.errorView}>{props?.msg}</Text>
+    )
+}
 
-    const switchOnLogin =() =>{
+
+
+export default function RegisterScreen({ navigation }) {
+
+    const switchOnLogin = () => {
         navigation.navigate("LoginScreen")
     }
+    const dispatch = useDispatch()
+    const { message, error } = useSelector(state => state.auth)
+
+    const name = useField("")
+    const email = useField("")
+    const password = useField("")
+
+    const register = async () => {
+        dispatch(AuthAction.register({
+            name: name.value,
+            email: email.value,
+            password: password.value
+        }))
+    }
+
+    useEffect(() => {
+        message && Alert.alert("Ошибка", message)
+        console.log(error);
+    }, [error, message])
+
+    const nameError = error?.find(e => e.param === "name")?.msg
+    const emailError = error?.find(e => e.param === "email")?.msg
+    const passwordError = error?.find(e => e.param === "password")?.msg
 
     return (
         <ScrollView>
@@ -48,27 +83,30 @@ export default function RegisterScreen({navigation}) {
                 </Text>
 
                 <View style={styles.field}>
-                    <Text style={styles.label}>E-mail</Text>
-                    <TextInput style={styles.input} placeholder="Введите email" />
+                    <Text style={styles.label}>Никнейм</Text>
+                    <TextInput style={styles.input} {...name} placeholder="Введите имя" />
+                    <ErrorView msg={nameError} />
                 </View>
 
                 <View style={styles.field}>
-                    <Text style={styles.label}>Никнейм</Text>
-                    <TextInput style={styles.input} placeholder="Введите email" />
+                    <Text style={styles.label}>E-mail</Text>
+                    <TextInput style={styles.input} {...email} placeholder="Введите email" />
+                    <ErrorView msg={emailError} />
                 </View>
 
                 <View style={styles.field}>
                     <Text style={styles.label}>Пароль</Text>
-                    <TextInput secureTextEntry={true} style={styles.input} placeholder="Введите пароль" />
+                    <TextInput secureTextEntry={true} style={styles.input} {...password} placeholder="Введите пароль" />
+                    <ErrorView msg={passwordError} />
                 </View>
 
                 <LoginService />
 
-                <View style={styles.button}>
-                    <Text style={styles.buttonText}>Зарегистироваться</Text>
-                </View>
+                <TouchableOpacity style={styles.button}>
+                    <Text style={styles.buttonText} onPress={() => register()}>Зарегистироваться</Text>
+                </TouchableOpacity>
 
-                <AuthSwitcher onPress={switchOnLogin}/>
+                <AuthSwitcher onPress={switchOnLogin} />
             </View>
         </ScrollView>
     )
@@ -129,7 +167,7 @@ const styles = StyleSheet.create({
     authSwitcher: {
         display: "flex",
         flexDirection: "row",
-        paddingVertical:15
+        paddingVertical: 15
     },
     authSwitcherTitle: {
         marginRight: 5,
@@ -151,5 +189,10 @@ const styles = StyleSheet.create({
     forgotPasswordText: {
         fontSize: 16,
         color: "#4E5FFC"
+    }, 
+    errorView: {
+        fontSize: 12,
+        color: "red",
+        marginTop:10
     }
 })

@@ -1,5 +1,3 @@
-import { Alert } from "react-native"
-
 const initialState = {
     isLoading: false,
     error: null,
